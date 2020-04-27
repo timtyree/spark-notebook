@@ -147,7 +147,7 @@ class AWS:
                        instance_market, bid_price, user_bootstrap_path, pyspark_python_version,
                        tags, jupyter_password):
         # Latest known working version of EMR
-        version = "emr-5.12.0"
+        version = "emr-5.13.0"
 
         # Create the log_uri from the AWS account id and region_name
         log_uri = "s3://aws-logs-%s-%s/elasticmapreduce/" % \
@@ -215,9 +215,10 @@ class AWS:
         juypter_bootstrap_action = {
             'Name': 'jupyter-provision',
             'ScriptBootstrapAction': {
-                'Path': 's3://mas-dse-open/emr/jupyter-provision-v0.4.1.sh',
+                'Path': 's3://mas-dse-emr/jupyter-provision-v0.4.5.sh',
                 'Args': [
                     jupyter_password,
+                    pyspark_python_version,
                 ]
             }
         }

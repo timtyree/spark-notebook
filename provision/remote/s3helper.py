@@ -133,7 +133,7 @@ class S3Helper:
         print("AWS Access Key ID: %s\nAWS Secret Access Key: %s"
                % (self.aws_access_key, self.aws_secret_access_key))
 
-    def open_bucket(self, bucket_name):
+    def open_bucket(self, bucket_name, region=None):
         """Open a S3 bucket.
 
             Args:
@@ -147,11 +147,16 @@ class S3Helper:
 
         while bucket_name[-1] == '/':
             bucket_name = bucket_name[:-1]
+        if region is None:
+            print("Warning: S3 region is not defined. Default region is set to 'us-east-1'.")
+            region = "us-east-1"
         self.bucket_name = bucket_name
-        self.conn = S3Connection(host="s3.amazonaws.com")
+        self.conn = S3Connection(host="s3.{}.amazonaws.com".format(region))
         try:
             self.bucket = self.conn.get_bucket(self.bucket_name)
         except S3ResponseError as e:
+            self.bucket = None
+            self.bucket_name = None
             print('Open S3 bucket "%s" failed.\n' % bucket_name + str(e))
             print(e.message)
 

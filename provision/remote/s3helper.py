@@ -105,34 +105,6 @@ class S3Helper:
           Note this method do nothing on your local HDFS.
         ''')
 
-    def set_credential(self, aws_access_key, aws_secret_access_key):
-        """Set AWS credential.
-
-            Args:
-                aws_access_key, aws_secret_access_key
-            Returns:
-                None
-        """
-        self.aws_access_key = aws_access_key
-        self.aws_secret_access_key = aws_secret_access_key
-
-    def set_sparkcontext(self, sc):
-        """Setup SparkContext to load files directly from S3.
-        """
-        if not self.aws_access_key:
-            raise ValueError('AWS credential is not set. '
-                             'Please use set_credential method first.')
-        _conf = sc._jsc.hadoopConfiguration()
-        _conf.set("fs.s3n.awsAccessKeyId", self.aws_access_key)
-        _conf.set("fs.s3n.awsSecretAccessKey", self.aws_secret_access_key)
-
-    def print_credential(self):
-        if not self.aws_access_key:
-            raise ValueError('AWS credential is not set. '
-                             'Please use set_credential method first.')
-        print("AWS Access Key ID: %s\nAWS Secret Access Key: %s"
-               % (self.aws_access_key, self.aws_secret_access_key))
-
     def open_bucket(self, bucket_name, region=None):
         """Open a S3 bucket.
 

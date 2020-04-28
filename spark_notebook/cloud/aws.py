@@ -366,7 +366,7 @@ class AWS:
         except Exception as e:
             raise AWSException("Unknown Error: %s" % e)
 
-    def get_security_group_port_open(self, security_group_id, port):
+    def get_security_group_port_open(self, security_group_id, cidr_ip, port):
         try:
             client = boto3.client('ec2',
                                   aws_access_key_id=self.access_key_id,
@@ -380,14 +380,15 @@ class AWS:
 
             # Loop through all of the security group permissions and if the port
             for ip_permission in response["SecurityGroups"][0]["IpPermissions"]:
-                if ip_permission["FromPort"] == port and ip_permission["ToPort"] == port:
+                if ip_permission["FromPort"] == port and ip_permission["ToPort"] == port and \
+                        ip_permission["IpRanges"][0]["CidrIp"] == cidr_ip:
                     return True
             return False
         except botocore.exceptions.ClientError as e:
             raise AWSException("There was an error describing the security group: %s" %
                                e.response["Error"]["Message"])
 
-    def authorize_security_group_ingress(self, security_group_id, port, description):
+    def authorize_security_group_ingress(self, security_group_id, cidr_ip, port, description):
         try:
             client = boto3.client('ec2',
                                   aws_access_key_id=self.access_key_id,
@@ -403,7 +404,7 @@ class AWS:
                     {'IpProtocol': 'tcp',
                      'FromPort': port,
                      'ToPort': port,
-                     'IpRanges': [{'CidrIp': '0.0.0.0/0',
+                     'IpRanges': [{'CidrIp': cidr_ip,
                                    'Description': description}]}
                 ]
             )

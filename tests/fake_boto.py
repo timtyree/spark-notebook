@@ -103,14 +103,17 @@ class FakeBotoClient(object):
                         {
                             "FromPort": 22,
                             "ToPort": 22,
+                            'IpRanges': [{'CidrIp': "0.0.0.0/32"}]
                         },
                         {
                             "FromPort": 8088,
                             "ToPort": 8088,
+                            'IpRanges': [{'CidrIp': "0.0.0.0/32"}]
                         },
                         {
                             "FromPort": 8888,
                             "ToPort": 8888,
+                            'IpRanges': [{'CidrIp': "0.0.0.0/32"}]
                         },
                     ]
                 }

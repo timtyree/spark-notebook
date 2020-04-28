@@ -299,8 +299,8 @@ def cluster_details(account, cluster_id):
             cidr_ip = requests.get('http://ip.42.pl/raw').text + "/32"
 
             # Check and open SSH port
-            if not cloud_account.get_security_group_port_open(master_security_group, cidr_ip, 22):
-                cloud_account.authorize_security_group_ingress(master_security_group, cidr_ip, 22,
+            if not cloud_account.get_security_group_port_open(master_security_group, "0.0.0.0/0", 22):
+                cloud_account.authorize_security_group_ingress(master_security_group, "0.0.0.0/0", 22,
                                                                "SSH")
             # Check and open YARN ResourceManager port
             if not cloud_account.get_security_group_port_open(master_security_group, cidr_ip, 8088):

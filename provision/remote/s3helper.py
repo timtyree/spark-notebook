@@ -14,7 +14,7 @@ def _run_command(command, detail=False):
             line = proc.stdout.readline()
             if not line:
                 break
-            print(line),
+            print(line)
     return proc.communicate()
 
 
@@ -105,7 +105,7 @@ class S3Helper:
           Note this method do nothing on your local HDFS.
         ''')
 
-    def open_bucket(self, bucket_name):
+    def open_bucket(self, bucket_name, region=None):
         """Open a S3 bucket.
 
             Args:
@@ -119,13 +119,18 @@ class S3Helper:
 
         while bucket_name[-1] == '/':
             bucket_name = bucket_name[:-1]
+        if region is None:
+            print("Warning: S3 region is not defined. Default region is set to 'us-east-1'.")
+            region = "us-east-1"
         self.bucket_name = bucket_name
-        self.conn = S3Connection(host="s3.amazonaws.com")
+        self.conn = S3Connection(host="s3.{}.amazonaws.com".format(region))
         try:
             self.bucket = self.conn.get_bucket(self.bucket_name)
         except S3ResponseError as e:
-            print('Open S3 bucket "%s" failed.\nError code %d: '
-                  % (bucket_name, e.status) + e.reason)
+            self.bucket = None
+            self.bucket_name = None
+            print('Open S3 bucket "%s" failed.\n' % bucket_name + str(e))
+            print(e.message)
 
     def ls(self, path=''):
         """same as ls_s3"""

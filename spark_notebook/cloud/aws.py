@@ -378,11 +378,14 @@ class AWS:
         try:
             response = client.describe_security_groups(GroupIds=[security_group_id])
 
-            # Loop through all of the security group permissions and if the port
+            # Loop through all of the security group permissions and if the port and cidr ip is
+            # present return true
             for ip_permission in response["SecurityGroups"][0]["IpPermissions"]:
-                if ip_permission["FromPort"] == port and ip_permission["ToPort"] == port and \
-                        ip_permission["IpRanges"][0]["CidrIp"] == cidr_ip:
-                    return True
+                if ip_permission["FromPort"] == port and ip_permission["ToPort"] == port:
+                    # Find the cidr ip in the list of ip ranges
+                    for ip_range in ip_permission["IpRanges"]:
+                        if ip_range["CidrIp"] == cidr_ip:
+                            return True
             return False
         except botocore.exceptions.ClientError as e:
             raise AWSException("There was an error describing the security group: %s" %

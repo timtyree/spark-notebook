@@ -7,3 +7,4 @@ credentials.yaml
 .cache/
 thirdparty/spark/ec2/lib
 nohup.out
+neighbors.txt
